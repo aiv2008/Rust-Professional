@@ -29,13 +29,14 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+
+impl<T:std::cmp::PartialOrd + std::cmp::PartialEq+Debug+Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T:std::cmp::PartialOrd + std::cmp::PartialEq+Debug+Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,12 +72,51 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
+		let mut result_list = Self{
             length: 0,
             start: None,
             end: None,
+        };
+        let mut move_a = list_a.start;
+        let mut move_b = list_b.start;
+        while let Some(_a) = move_a{
+            if let None = move_b{
+                break;
+            }
+            while let Some(_b) = move_b{
+                unsafe {
+                    if (*_a.as_ptr()).val <= (*_b.as_ptr()).val{
+                        println!("aaaaa");
+                        result_list.add((*_a.as_ptr()).val.clone());
+                        move_a = (*_a.as_ptr()).next ;
+                        break;
+                    }else{
+                        println!("vvvvb");
+                        result_list.add((*_b.as_ptr()).val.clone());
+                        move_b = (*_b.as_ptr()).next;                    }
+                }
+            }
         }
+        println!("result1: {:#?}", result_list);
+        while let Some(_a) = move_a{
+            unsafe {
+                result_list.add((*_a.as_ptr()).val.clone());
+                move_a = (*_a.as_ptr()).next ;
+            }
+        }
+        while let Some(_b) = move_b{
+            unsafe {
+                result_list.add((*_b.as_ptr()).val.clone());
+                move_b = (*_b.as_ptr()).next;  
+            }
+        }
+        println!("result2: {:#?}", result_list);
+		// Self {
+        //     length: 0,
+        //     start: None,
+        //     end: None,
+        // }
+        result_list
 	}
 }
 
