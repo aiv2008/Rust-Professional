@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
-use std::path::{Path, PathBuf};
+use std::path::{ PathBuf};
 use std::process::{Command, exit};
 use std::time::Instant;
-use std::io::{self, Write};
+use std::io::{self};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Exercise {

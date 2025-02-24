@@ -11,3 +11,11 @@ colored = "2.0"
 termion = "1.5"
 log = "0.4"
 log4rs = "1.0"
+
+[[test]]
+name = "algorithm1"
+path = "exercises/easy/algorithm1.rs"
+
+[[test]]
+name = "algorithm2"
+path = "exercises/easy/algorithm2.rs"

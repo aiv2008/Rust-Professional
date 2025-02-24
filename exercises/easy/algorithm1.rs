@@ -4,9 +4,11 @@
 */
 
 
-use std::fmt::{self, Display, Formatter};
+use std::fmt::{self, Display, Formatter, Debug};
 use std::ptr::NonNull;
 use std::vec::*;
+
+fn main(){}
 
 #[derive(Debug)]
 struct Node<T> {
@@ -72,7 +74,8 @@ impl<T:std::cmp::PartialOrd + std::cmp::PartialEq+Debug+Clone> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		let mut result_list = Self{
+		//TODO
+        let mut result_list = Self{
             length: 0,
             start: None,
             end: None,
@@ -86,12 +89,10 @@ impl<T:std::cmp::PartialOrd + std::cmp::PartialEq+Debug+Clone> LinkedList<T> {
             while let Some(_b) = move_b{
                 unsafe {
                     if (*_a.as_ptr()).val <= (*_b.as_ptr()).val{
-                        println!("aaaaa");
                         result_list.add((*_a.as_ptr()).val.clone());
                         move_a = (*_a.as_ptr()).next ;
                         break;
                     }else{
-                        println!("vvvvb");
                         result_list.add((*_b.as_ptr()).val.clone());
                         move_b = (*_b.as_ptr()).next;                    }
                 }
