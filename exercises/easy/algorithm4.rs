@@ -11,7 +11,7 @@ use std::fmt::Debug;
 #[derive(Debug)]
 struct TreeNode<T>
 where
-    T: Ord,
+T: Ord+ Clone+Debug,
 {
     value: T,
     left: Option<Box<TreeNode<T>>>,
@@ -21,7 +21,7 @@ where
 #[derive(Debug)]
 struct BinarySearchTree<T>
 where
-    T: Ord,
+T: Ord+ Clone+Debug,
 {
     root: Option<Box<TreeNode<T>>>,
 }
@@ -41,7 +41,7 @@ where
 
 impl<T> BinarySearchTree<T>
 where
-    T: Ord,
+T: Ord+ Clone+Debug,
 {
 
     fn new() -> Self {
@@ -51,6 +51,15 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        match &mut self.root {
+            Some(r)=>{
+                r.insert(value);
+            },
+            None=>{
+                let root = TreeNode::new(value);
+                self.root = Some(Box::new(root)) ;
+            }
+        }
     }
 
     // Search for a value in the BST
@@ -62,11 +71,32 @@ where
 
 impl<T> TreeNode<T>
 where
-    T: Ord,
+    T: Ord+ Clone+Debug,
 {
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
+        if value < self.value{
+            match &mut self.left {
+                Some(left)=>{
+                    (*left).insert(value);
+                },
+                _=>{
+                    let new_node = TreeNode::new(value);
+                    self.left = Option::Some(Box::new(new_node));
+                }
+            }
+        }else if value > self.value{
+            match &mut self.right {
+                Some(right)=>{
+                    (*right).insert(value);
+                },
+                _=>{
+                    let new_node = TreeNode::new(value);
+                    self.right = Option::Some(Box::new(new_node));
+                }
+            }
+        }
     }
 }
 
