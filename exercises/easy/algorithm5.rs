@@ -29,9 +29,28 @@ impl Graph {
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
 		//TODO
-
-        let mut visit_order = vec![];
-        visit_order
+        if self.adj.len() <= 0{
+            Vec::<usize>::new()
+        }else{
+            // Vec::<usize>::new()
+            let mut result_vec:Vec<usize> = Vec::new();
+            let start_elem = &self.adj[start];
+            result_vec.push(start);
+            for a in start_elem{
+                result_vec.push(*a);
+            }
+            for i in 1..result_vec.len(){
+                let v = &self.adj[i];
+                for a in v{
+                    if !result_vec.contains(a){
+                        result_vec.push(*a);
+                    }
+                }
+            }
+            result_vec
+        }
+        // let mut visit_order = vec![];
+        // visit_order
     }
 }
 
