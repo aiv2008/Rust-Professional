@@ -28,7 +28,7 @@ T: Ord+ Clone+Debug,
 
 impl<T> TreeNode<T>
 where
-    T: Ord,
+    T: Ord+ Clone+Debug,
 {
     fn new(value: T) -> Self {
         TreeNode {
@@ -63,9 +63,19 @@ T: Ord+ Clone+Debug,
     }
 
     // Search for a value in the BST
+    //TODO
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        match &self.root {
+            Some(root)=>{
+                root.search(value)
+            },
+            None=>{
+                false
+            }
+        }
+        // true
+    
     }
 }
 
@@ -97,6 +107,31 @@ where
                 }
             }
         }
+    }
+
+    fn search(&self, value: T) -> bool{
+        if value < self.value {
+            match &self.left {
+                Some(left)=>{
+                    left.search(value)
+                },
+                None=>{
+                    false
+                }
+            }
+        }else if value > self.value{
+            match &self.right {
+                Some(right)=>{
+                    right.search(value)
+                },
+                None=>{
+                    false
+                }
+            }
+        }else {
+            true
+        }
+        // !unimplemented!()
     }
 }
 
