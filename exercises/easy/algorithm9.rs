@@ -38,6 +38,23 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+
+        self.items.push(value);
+        self.count += 1;
+        let mut i = self.len();
+        if self.len() > 1 {
+            let mut ptr = self.items.as_mut_ptr();
+            while  i > 0{
+                unsafe {
+                    if !(self.comparator)(&self.items[i], &self.items[i/2]) {
+                        let temp = &mut self.items[i] as *mut T;
+                        ptr.add(i).write(*ptr.add(i/2));
+                        ptr.add(i/2).write(*temp);
+                    }
+                }
+                i /= 2;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
