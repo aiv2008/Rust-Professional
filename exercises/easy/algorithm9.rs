@@ -59,7 +59,8 @@ where
                 self.items[i/2] = temp;   
             }
             // println!("after  i={:#?}, {:#?}", &self.items[i], &self.items[i/2]);
-            i /= 2;
+            // i /= 2;
+            i = self.parent_idx(i);
         }
         // self.items.remove(0);
     }
@@ -109,7 +110,15 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        self.items.iter().next();
+        match self.items.iter().next() {
+            Some(n)=>{
+                Some(*n)
+            },
+            None=>None,
+        }
+        
+		// None
     }
 }
 
