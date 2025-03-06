@@ -6,10 +6,13 @@
 
 use std::cmp::Ord;
 use std::default::Default;
+use std::f32::consts;
+use std::fmt::Debug;
 
+#[derive(Debug)]
 pub struct Heap<T>
 where
-    T: Default,
+    T: Default+Copy+Debug,
 {
     count: usize,
     items: Vec<T>,
@@ -18,7 +21,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default+Copy+Debug,
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -38,23 +41,27 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
-
         self.items.push(value);
         self.count += 1;
-        let mut i = self.len();
-        if self.len() > 1 {
-            let mut ptr = self.items.as_mut_ptr();
-            while  i > 0{
-                unsafe {
-                    if !(self.comparator)(&self.items[i], &self.items[i/2]) {
-                        let temp = &mut self.items[i] as *mut T;
-                        ptr.add(i).write(*ptr.add(i/2));
-                        ptr.add(i/2).write(*temp);
-                    }
-                }
-                i /= 2;
+        let n = self.len();
+        let mut i = n ;
+        // println!("i={}, result={:#?}", i, self);
+        // println!("n={}, i={}", n, i);
+        while n >1 && i > 0 && (self.comparator)(&self.items[i], &self.items[i/2]) {
+            // println!("before:   i={:#?}, {:#?}", &self.items[i], &self.items[i/2]);
+            unsafe {
+                let temp = *(&mut self.items[i] as *mut T);
+                // let p_id = self.parent_idx(i+1);
+                let p_id = self.parent_idx(i);
+                // println!("p_id={}", p_id);
+                // self.items[i] = self.items[p_id-1];
+                self.items[i] = self.items[p_id];
+                self.items[i/2] = temp;   
             }
+            // println!("after  i={:#?}, {:#?}", &self.items[i], &self.items[i/2]);
+            i /= 2;
         }
+        // self.items.remove(0);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -81,7 +88,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default + Ord,
+    T: Default + Ord+Copy+Debug,
 {
     /// Create a new MinHeap
     pub fn new_min() -> Self {
@@ -96,7 +103,7 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default+Copy+Debug,
 {
     type Item = T;
 
@@ -112,7 +119,7 @@ impl MinHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord+Copy+Debug,
     {
         Heap::new(|a, b| a < b)
     }
@@ -124,7 +131,7 @@ impl MaxHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord+Copy+Debug,
     {
         Heap::new(|a, b| a > b)
     }
