@@ -110,12 +110,15 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-        self.items.iter().next();
-        match self.items.iter().next() {
-            Some(n)=>{
-                Some(*n)
-            },
-            None=>None,
+        if self.is_empty(){None}
+        else{
+            //TODO
+            unsafe {
+                // let mut ptr = self.items.as_mut_ptr().add(1);
+                
+                Some(*self.items.as_ptr().add(1))
+            }
+            // None
         }
         
 		// None
