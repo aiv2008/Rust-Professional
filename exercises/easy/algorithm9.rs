@@ -8,6 +8,7 @@ use std::cmp::Ord;
 use std::default::Default;
 use std::f32::consts;
 use std::fmt::Debug;
+use std::ptr::{null, null_mut};
 
 #[derive(Debug)]
 pub struct Heap<T>
@@ -45,24 +46,15 @@ where
         self.count += 1;
         let n = self.len();
         let mut i = n ;
-        // println!("i={}, result={:#?}", i, self);
-        // println!("n={}, i={}", n, i);
-        while n >1 && i > 0 && (self.comparator)(&self.items[i], &self.items[i/2]) {
-            // println!("before:   i={:#?}, {:#?}", &self.items[i], &self.items[i/2]);
+        while n >1 && i > 1 && (self.comparator)(&self.items[i], &self.items[i/2]) {
             unsafe {
                 let temp = *(&mut self.items[i] as *mut T);
-                // let p_id = self.parent_idx(i+1);
                 let p_id = self.parent_idx(i);
-                // println!("p_id={}", p_id);
-                // self.items[i] = self.items[p_id-1];
                 self.items[i] = self.items[p_id];
                 self.items[i/2] = temp;   
             }
-            // println!("after  i={:#?}, {:#?}", &self.items[i], &self.items[i/2]);
-            // i /= 2;
             i = self.parent_idx(i);
         }
-        // self.items.remove(0);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -110,18 +102,21 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-        if self.is_empty(){None}
-        else{
-            //TODO
-            unsafe {
-                // let mut ptr = self.items.as_mut_ptr().add(1);
-                
-                Some(*self.items.as_ptr().add(1))
+        if self.is_empty(){
+            None
+        }else{
+            let mut v = Vec::<T>::new();
+            for i  in 1..self.items.len(){
+                v.push(self.items[i]);
             }
-            // None
+            self.items = v;
+            self.count -= 1;
+            match self.items.iter().next() {
+                Some(t)=>{Some(*t)},
+                None=>None
+            }
         }
         
-		// None
     }
 }
 
