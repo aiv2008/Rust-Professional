@@ -6,6 +6,7 @@
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
+use std::ops::Index;
 #[derive(Debug, Clone)]
 pub struct NodeNotInGraph;
 impl fmt::Display for NodeNotInGraph {
@@ -13,6 +14,8 @@ impl fmt::Display for NodeNotInGraph {
         write!(f, "accessing a node that is not in the graph")
     }
 }
+
+#[derive(Debug)]
 pub struct UndirectedGraph {
     adjacency_table: HashMap<String, Vec<(String, i32)>>,
 }
@@ -30,6 +33,23 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let map = self.adjacency_table_mutable();
+        match  map.get_mut(edge.0) {
+            Some(v)=>{
+                v.push((edge.1.to_string(), edge.2));
+            },
+            None=>{
+                map.insert(edge.0.to_string(), vec![(edge.1.to_string(), edge.2)]);
+            }
+        }
+        match map.get_mut(edge.1) {
+            Some(v)=>{
+                v.push((edge.0.to_string(), edge.2));
+            },
+            None=>{
+                map.insert(edge.1.to_string(), vec![(edge.0.to_string(), edge.2)]);
+            }
+        }
     }
 }
 pub trait Graph {
@@ -42,6 +62,23 @@ pub trait Graph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let map = self.adjacency_table_mutable();
+        match  map.get_mut(edge.0) {
+            Some(v)=>{
+                v.push((edge.1.to_string(), edge.2));
+            },
+            None=>{
+                map.insert(edge.0.to_string(), vec![(edge.1.to_string(), edge.2)]);
+            }
+        }
+        match map.get_mut(edge.1) {
+            Some(v)=>{
+                v.push((edge.0.to_string(), edge.2));
+            },
+            None=>{
+                map.insert(edge.1.to_string(), vec![(edge.0.to_string(), edge.2)]);
+            }
+        }
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
