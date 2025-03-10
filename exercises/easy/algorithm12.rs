@@ -13,7 +13,50 @@ use std::fmt::{self, Display, Formatter};
 
 pub fn is_palindrome(s: String) -> bool {
     // TODO: Implement the logic to check if the string is a palindrome
-    false // Placeholder return value
+    // let mut stack: Stack<u8> = Stack::new();
+	let mut v: Vec<u8> = Vec::new();
+	for c in s.chars(){
+		if ((c as u8) <= 90 && (c as u8) >= 65) || ((c as u8) <= 122 && (c as u8) >= 97){
+			if (c as u8) <= 90 && (c as u8) >= 65{
+				v.push((c as u8) + 32);
+				// stack.push((c as u8) + 32);
+			}else{
+				v.push(c as u8);
+				// stack.push(c as u8);
+			}
+		}
+	}
+	
+    let mut n = 0;
+    if v.len()%2==0{
+        n = v.len()/2;
+    }else{
+        n = (v.len()-1)/2;
+    }
+    let mut j = 0;
+    for i in 0..n{
+        println!("vi={}, vn-i={}", v[i], v[v.len()-i-1]);
+        if v[i] != v[v.len()-i-1]{
+            break;
+        }else{
+            j += 1;
+        }
+    }
+    println!("i={}", j);
+    if v.len()%2==0{
+        if j != v.len()/2{
+            false
+        }else{
+            true
+        }
+    }else{
+        if j != (v.len()-1)/2{
+            false
+        }else{
+            true
+        }
+    }
+    // true
 }
 
 #[cfg(test)]
