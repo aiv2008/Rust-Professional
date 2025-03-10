@@ -28,7 +28,7 @@ pub fn find_missing_number(nums: Vec<i32>) -> i32 {
         sum_lack += a;
     }
     sum - sum_lack
-    0 // Placeholder return value
+    // 0 // Placeholder return value
 }
 
 #[cfg(test)]
