@@ -46,7 +46,7 @@ where
         self.count += 1;
         let n = self.len();
         let mut i = n ;
-        while n >1 && i > 1 && (self.comparator)(&self.items[i], &self.items[i/2]) {
+        while n >1 && i > 1 && !(self.comparator)(&self.items[i], &self.items[i/2]) {
             unsafe {
                 let temp = *(&mut self.items[i] as *mut T);
                 let p_id = self.parent_idx(i);
@@ -102,21 +102,19 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-        if self.is_empty(){
-            None
+        // if !self.0.is_empty() {
+		// 	self.0.size -= 1;self.0.data.pop()
+		// } 
+		// else {
+		// 	None
+		// }
+        println!("is empty:{}", self.is_empty());
+        if !self.is_empty(){
+            self.count -=  1;
+            self.items.pop()
         }else{
-            let mut v = Vec::<T>::new();
-            for i  in 1..self.items.len(){
-                v.push(self.items[i]);
-            }
-            self.items = v;
-            self.count -= 1;
-            match self.items.iter().next() {
-                Some(t)=>{Some(*t)},
-                None=>None
-            }
+            None
         }
-        
     }
 }
 
@@ -155,7 +153,7 @@ mod tests {
 
     #[test]
     fn test_min_heap() {
-        let mut heap = MinHeap::new();
+        let mut heap: Heap<i32> = MinHeap::new();
         heap.add(4);
         heap.add(2);
         heap.add(9);
@@ -175,6 +173,7 @@ mod tests {
         heap.add(2);
         heap.add(9);
         heap.add(11);
+        println!("{:#?}", heap);
         assert_eq!(heap.len(), 4);
         assert_eq!(heap.next(), Some(11));
         assert_eq!(heap.next(), Some(9));
