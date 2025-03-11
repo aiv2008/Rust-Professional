@@ -15,7 +15,50 @@ use std::fmt::{self, Display, Formatter};
 
 pub fn are_anagrams(s1: String, s2: String) -> bool {
     // TODO: Implement the logic to check if two strings are anagrams
-    false // Placeholder return value
+    let mut v1: Vec<u8> = Vec::new();
+
+    let mut v2: Vec<u8> = Vec::new();
+    for c in s1.chars(){
+        if ((c as u8) <= 90 && (c as u8) >= 65) || ((c as u8) <= 122 && (c as u8) >= 97){
+			if (c as u8) <= 90 && (c as u8) >= 65{
+				v1.push((c as u8) + 32);
+				// stack.push((c as u8) + 32);
+			}else{
+				v1.push(c as u8);
+				// stack.push(c as u8);
+			}
+		}
+     }
+     for c in s2.chars(){
+        if ((c as u8) <= 90 && (c as u8) >= 65) || ((c as u8) <= 122 && (c as u8) >= 97){
+			if (c as u8) <= 90 && (c as u8) >= 65{
+				v2.push((c as u8) + 32);
+				// stack.push((c as u8) + 32);
+			}else{
+				v2.push(c as u8);
+				// stack.push(c as u8);
+			}
+		}
+     }
+     sort(&mut v1);
+     sort(&mut v2);
+     if v1.len() != v2.len(){
+        false
+     }else{
+        let mut j = 0;
+        for i in 0..v1.len(){
+            if v1[i] != v2[i]{
+                break;
+            }
+            j += 1;
+        }
+
+        if j != v1.len() || j != v2.len(){
+            false
+        }else{
+            true
+        }
+     }
 }
 
 #[cfg(test)]

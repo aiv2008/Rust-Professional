@@ -35,14 +35,12 @@ pub fn is_palindrome(s: String) -> bool {
     }
     let mut j = 0;
     for i in 0..n{
-        println!("vi={}, vn-i={}", v[i], v[v.len()-i-1]);
         if v[i] != v[v.len()-i-1]{
             break;
         }else{
             j += 1;
         }
     }
-    println!("i={}", j);
     if v.len()%2==0{
         if j != v.len()/2{
             false
