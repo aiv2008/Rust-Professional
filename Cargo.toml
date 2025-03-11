@@ -47,3 +47,8 @@ path = "exercises/easy/algorithm8.rs"
 [[test]]
 name = "algorithm9"
 path = "exercises/easy/algorithm9.rs"
+
+
+[[test]]
+name = "algorithm14"
+path = "exercises/easy/algorithm14.rs"

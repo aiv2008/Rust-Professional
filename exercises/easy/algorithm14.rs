@@ -11,9 +11,36 @@
 
 use std::fmt::{self, Display, Formatter};
 
+fn sort<T:std::cmp::PartialEq+PartialOrd+Clone>(array: &mut Vec<T>){
+	//TODO
+    for i in 1..array.len(){
+        for j in 0..i{
+            let k = i-j;
+            if array[k] < array[k-1]{
+                let temp = array[k].clone();
+                array[k] = array[k-1].clone();
+                array[k-1] = temp.clone();
+            }
+        }
+    }
+}
+
 pub fn find_duplicates(nums: Vec<i32>) -> Vec<i32> {
     // TODO: Implement the logic to find all duplicates in the array
-    Vec::new() // Placeholder return value
+    let mut v = Vec::<i32>::new();
+    for i in 0..nums.len(){
+        for j in (i+1)..nums.len(){
+            if nums[i] == nums[j]{
+                if !v.contains(&nums[i]){
+                    v.push(nums[i]);
+                }
+                
+            }
+        }
+    }
+    sort(&mut v);
+    v
+    // Vec::new() // Placeholder return value
 }
 
 #[cfg(test)]
