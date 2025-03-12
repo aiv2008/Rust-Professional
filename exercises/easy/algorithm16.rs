@@ -23,7 +23,38 @@ pub fn rotate_matrix_90_degrees(matrix: &mut Vec<Vec<i32>>) {
         }
         result.push(temp);
     }
-    let mut ptr = &mut result as *mut Vec<Vec::<i32>>;
+    let mut i = 0;
+    let mut j = 0;
+    let mut n = 0;
+    let mut kk = 0;
+    while n < matrix.len() && i < result.len(){
+        while kk < matrix[0].len() && j < result[0].len(){
+            matrix[n][kk] = result[n][kk];
+            kk += 1;
+            j+=1;
+        }
+        if kk == result[0].len(){
+            for i in kk..result[0].len(){
+                matrix[n].push(result[n][i]);
+            }
+        }else if j == result[0].len(){
+            for i in j..matrix[0].len(){
+                matrix[n].pop();
+            }
+        }
+        n += 1;
+        i += 1;
+    }
+
+    if n == matrix.len(){
+        for i in n..result.len(){
+            matrix.push(result[i].clone());
+        }
+    }else if i == result.len(){
+        for j in i..matrix.len(){
+            matrix.pop();
+        }
+    }
 }
 
 #[cfg(test)]
