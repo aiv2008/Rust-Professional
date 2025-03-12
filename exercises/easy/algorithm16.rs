@@ -13,6 +13,17 @@ use std::fmt::{self, Display, Formatter};
 
 pub fn rotate_matrix_90_degrees(matrix: &mut Vec<Vec<i32>>) {
     // TODO: Implement the logic to rotate the matrix 90 degrees in place
+    let mut result = Vec::<Vec::<i32>>::new();
+    for i in 0..matrix[0].len(){
+        let mut temp: Vec<i32> = Vec::<i32>::new();
+        let n = matrix.len();
+        for j in 0..n{
+            println!("{}",matrix[n-j-1][i]);
+            temp.push( matrix[n-j-1][i]);
+        }
+        result.push(temp);
+    }
+    let mut ptr = &mut result as *mut Vec<Vec::<i32>>;
 }
 
 #[cfg(test)]
