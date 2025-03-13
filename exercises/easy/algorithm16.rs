@@ -18,13 +18,37 @@ pub fn rotate_matrix_90_degrees(matrix: &mut Vec<Vec<i32>>) {
         let mut temp: Vec<i32> = Vec::<i32>::new();
         let n = matrix.len();
         for j in 0..n{
-            println!("{}",matrix[n-j-1][i]);
             temp.push( matrix[n-j-1][i]);
         }
         result.push(temp);
     }
-    let mut ptr = &mut result as *mut Vec<Vec::<i32>>;
+    let mut j = 0;
+    //     vec![5, 3, 1],
+        //     vec![6, 4, 2],
+    for i in 0..result.len(){
+        if j >= matrix.len(){
+            matrix.push(result[j].clone());
+        }else{
+            let mut l = 0;
+            for k in 0..result[i].len(){
+                if l >= matrix[j].len(){
+                    matrix[j].push(result[j][l]);
+                }else{
+                    matrix[j][l] = result[j][l];
+                }
+                l += 1;
+            }
+            for k in l..matrix[j].len(){
+                matrix.pop();
+            }
+        }
+        j += 1;
+    }
+    for i in j..matrix.len(){
+        matrix.pop();
+    }
 }
+
 
 #[cfg(test)]
 mod tests {
