@@ -11,46 +11,66 @@
     Hint: You can start by sorting the intervals by their starting point and then merge them one by one.
 */
 
-use std::fmt::{self, Display, Formatter};
+use std::{cmp::{self, max}, fmt::{self, Display, Formatter}};
+
+
+fn sort(array: Vec<Vec<i32>>)->Vec<Vec<i32>>{
+	//TODO
+    if array.len() <= 1  {
+        return array;
+    }
+    
+    let mut result = Vec::<Vec<i32>>::new();
+    for a in array{
+        result.push(a);
+    }
+    // result.push(array[0].clone());
+    for i in 1..result.len(){
+        for j in 0..i{
+            let k = i-j;
+            if result[k][0] < result[k-1][0]{
+                let temp = result[k].clone();
+                result[k] = result[k-1].clone();
+                result[k-1] = temp.clone();
+                // result.insert( k-1, array[k].clone());
+            }
+            // else{
+            //     result.push(array[k].clone());
+            // }
+        }
+    }
+    result
+}
+
+fn merge(intervals1: Vec<i32>,intervals2: Vec<i32>) -> Vec<Vec<i32>>{
+    let mut result = Vec::<Vec<i32>>::new();
+    if intervals1[1] < intervals2[0]{
+        result.push(intervals1);
+        result.push(intervals2);
+    }else{
+        result.push(vec![intervals1[0], max(intervals1[1], intervals2[1])]);
+    }
+    result
+}
 
 pub fn merge_intervals(intervals: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-    if intervals.is_empty() || intervals.len() == 1{
-        intervals
-    }
-    else if intervals.len() == 2{
-        let left = intervals[0].clone();
-        let right = intervals[1].clone();
-        if left[1] < right[0] || left[0] > right[1]{//outside the interval
-            intervals
-        }else if (left[0] <= right[0] && left[1] >= right[1]) || (right[0] <= left[0] && right[1] >= left[1]){//include the interval
-            // Vec::new()
-            if left[0] <= right[0] && left[1] >= right[1]{
-                vec![left]
-            }else{
-                vec![right]
-            }
-        }else{//intersect with eachother
-            // Vec::new()
-            vec![vec![max(left[0], right[0]), max(left[1], left[1])]]
-            // max(v1, v2)
-        }
-        
+    // TODO: Implement the logic to merge overlapping intervals
+    let v = sort(intervals);
+    let mut result = Vec::<Vec<i32>>::new();
+    if v.is_empty(){
+        Vec::<Vec<i32>>::new()
     }else{
-        let n = intervals.len()/2;
-        let mut left = Vec::<Vec<i32>>::new();
-        let mut right = Vec::<Vec<i32>>::new();
-        for i in 0..n{
-            left.push(intervals[i].clone());
+        result.push(v[0].clone());
+        for i in 1..v.len(){
+            let temp = merge(result[result.len()-1].clone(),v[i].clone());
+            result.pop();
+            for a in temp{
+                result.push(a);
+            }
         }
-        for i in (n+1)..intervals.len(){
-            right.push(intervals[i].clone());
-        }
-        left = merge_intervals(left);
-        right = merge_intervals(right);
-        let mut result = Vec::<Vec<i32>>::new();
-
-        Vec::new()
+        result
     }
+    // Vec::new() // Placeholder return value
 }
 
 #[cfg(test)]
