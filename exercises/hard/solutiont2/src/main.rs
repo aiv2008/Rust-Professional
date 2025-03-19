@@ -7,7 +7,7 @@ mod prime_factor;
 fn main() {
     let number = 99999999951437;
     let res = prime_factor::find_max_prime_factor(number);
-    
+    println!("{number}'s max prime factor: {res}");
 }
 
 fn breakdown(number: u128)->Vec<u128>{
