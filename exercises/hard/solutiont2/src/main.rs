@@ -1,30 +1,35 @@
 // I AM NOT DONE
 
+use std::cmp::Reverse;
+
 
 
 mod prime_factor;
 
 fn main() {
-    let number = 99999999951437;
-    let res = prime_factor::find_max_prime_factor(number);
-    println!("{number}'s max prime factor: {res}");
+    // let number = 99999999951437;
+    // let res = prime_factor::find_max_prime_factor(number);
+    // println!("{number}'s max prime factor: {res}");
+
+    println!("{}", check_zero("100000"));
 }
 
-fn breakdown(number: u128)->Vec<u128>{
-    let mut result = Vec::<u128>::new();
-    let mut i = 2;
-    let mut n = number;
-    while i * i < n {
-        if n % i == 0{
-            while n % i == 0 {
-                n /= i;
-            }
-            result.push(i);
+fn check_zero(s: &str)->bool{
+    for c in s.chars(){
+        if c != '0'{
+            return false;
         }
-        i += 1;
     }
-    if n != 1{
-        result.push(n);
+    true
+}
+
+fn add<'a>(str1: &'a str, str2: &'a str)->&'a str{
+    if check_zero(str1) && check_zero(str2){
+        return "0";
+    }else if check_zero(str1){
+        return str2;
+    }else if check_zero(str2){
+        return str1;
     }
-    result
+    unimplemented!()
 }
