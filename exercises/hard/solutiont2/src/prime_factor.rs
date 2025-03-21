@@ -141,17 +141,3 @@ fn bmul( a: i128, b: i128,  m: i128)->i128 {  // 快速乘
     max_factor
   }
   
-//   int main() {
-//     cin >> t;
-//     while (t--) {
-//       srand((unsigned)time(NULL));
-//       max_factor = 0;
-//       cin >> n;
-//       fac(n);
-//       if (max_factor == n)  // 最大的质因数即自己
-//         cout << "Prime\n";
-//       else
-//         cout << max_factor << '\n';
-//     }
-//     return 0;
-//   }
