@@ -2,15 +2,19 @@
 
 use std::cmp::Ordering;
 
+use prime_factor::BigInt;
+
 mod prime_factor;
 
 fn main() {
 
-    // println!("u128max={}", u128::MAX);
-    let number = 97993999919999958437;
+    let number = 10000071;
     let res = prime_factor::find_max_prime_factor(number);
     println!("{number}'s max prime factor: {res}");
 
+    println!("{}", ((10000071 as u128) & (1 as u128)));
+
+    println!("{:?}", BigInt::from((10000071 as u128).to_string()) & BigInt::one() );
 
     // println!("{}",prime_factor::div(String::from("199999999999999951437") ,String::from("9523809523809521497")));
 }

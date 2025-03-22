@@ -432,11 +432,16 @@ fn bmul( a: BigInt, b: BigInt,  m: BigInt)->BigInt {  // 快速乘
   
   fn qpow( mut x: BigInt, mut p: BigInt, m: BigInt) -> BigInt {  // 快速幂
     let mut ans: BigInt = BigInt::one();
-    while p.clone().cmp(&BigInt::one()) != Ordering::Equal {
+    while p != BigInt::zero() {
+    // while p.clone().cmp(&BigInt::one()) != Ordering::Equal {
     // while p != 0 {
-      if (p.clone() & BigInt::one()).cmp(&BigInt::one()) != Ordering::Equal {
+    //   if (p.clone() & BigInt::one()).cmp(&BigInt::one()) != Ordering::Equal {
+    //     ans = bmul(ans, x.clone(), m.clone());
+    //   }
+      if p.clone() & BigInt::one() != BigInt::one(){
         ans = bmul(ans, x.clone(), m.clone());
       }
+
       x = bmul(x.clone(), x, m.clone());
       p = p >> BigInt::one();
     }
@@ -444,19 +449,23 @@ fn bmul( a: BigInt, b: BigInt,  m: BigInt)->BigInt {  // 快速乘
   }
   
   fn Miller_Rabin(p : BigInt) -> bool {  // 判断素数
-    if p.clone().cmp(&BigInt::from(2.to_string())) == Ordering::Less {
+    // if p.clone().cmp(&BigInt::from(2.to_string())) == Ordering::Less {
+    if p < BigInt::from(2.to_string()){
     // if p <  2 {
         return false;
     }
-    if p.clone().cmp(&BigInt::from(2.to_string())) == Ordering::Equal  {
+    if p == BigInt::from(2.to_string()){
+    // if p.clone().cmp(&BigInt::from(2.to_string())) == Ordering::Equal  {
         return true;
     }
-    if p.clone().cmp(&BigInt::from(3.to_string())) == Ordering::Equal  {
+    if p == BigInt::from(3.to_string()){
+    // if p.clone().cmp(&BigInt::from(3.to_string())) == Ordering::Equal  {
         return true;
     }
     let mut d = p.clone() - BigInt::one();
     let mut r: i128 = 0;
-    while   (d.clone() & BigInt::one()).cmp(&BigInt::zero()) == Ordering::Equal {
+    // while   (d.clone() & BigInt::one()).cmp(&BigInt::zero()) == Ordering::Equal {
+    while d.clone() & BigInt::one() == BigInt::zero() {
         r += 1;
         d = d >> BigInt::one(); 
      } // 将d处理为奇数
