@@ -452,6 +452,9 @@ fn quick_power(mut a: i128, mut b: i128, mod_val: i128) -> i128 {
         if b & 1 == 1 {
             ans = (ans * a) % mod_val;
         }
+        if a  > i128::MAX {//若到达最大值，则转换成bigint方式计算
+
+        }
         a = (a * a) % mod_val;
         b >>= 1;
     }
