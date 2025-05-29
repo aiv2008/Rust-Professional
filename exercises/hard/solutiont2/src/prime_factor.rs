@@ -4,15 +4,35 @@ use rand::{thread_rng, Rng};
 
 use std::cmp::Ordering;
 use std::ops::{Add, BitAnd, Div, Mul, Neg, Rem, Shr, Sub};
-
+use crate::prime_factor;
 // use fraction::Fraction;
 
 pub fn find_max_prime_factor(number: u128) -> u128 {
 
     let mut max_factor = 0;
-    let result =  fac(BigInt::from(number.to_string()) ,BigInt::from(max_factor.to_string()) );
-    println!("result={:?}", result);
-    0
+    // let result =  fac(BigInt::from(number.to_string()) ,BigInt::from(max_factor.to_string()) );
+    // println!("result={:?}", result);
+
+    if prime_factor::miller_rabin(number as i128) {
+        println!("isprime");
+        println!("{}", number);
+        max_factor = number;
+    } else {
+        println!("noprime");
+        let mut factors = Vec::new();
+        prime_factor::find_factor(number as i128, &mut factors);
+        factors.sort();
+        let unique_factors: Vec<_> = factors.iter().copied().collect();
+        for (i, &factor) in unique_factors.iter().enumerate() {
+            if i == 0 || factor != unique_factors[i - 1] {
+                max_factor = factor as u128;
+                print!("{} ", factor);
+            }
+        }
+        println!();
+    }
+    max_factor
+    // 0
 }
 
 const BASE: i64 = 10;
@@ -411,151 +431,122 @@ impl BigInt {
     }
 }
 
-pub fn gcd(a: BigInt, b: BigInt)->BigInt{
-    if b == BigInt::zero(){
-        return a;
+
+fn quick_multiply(a: i128, mut b: i128, mod_val: i128) -> i128 {
+    let mut ans = 0;
+    let mut res = a % mod_val;
+    while b > 0 {
+        if b & 1 == 1 {
+            ans = (ans + res) % mod_val;
+        }
+        res = (res + res) % mod_val;
+        b >>= 1;
     }
-    gcd(b.clone(), a % b)
+    ans
 }
 
-
-fn bmul( a: BigInt, b: BigInt,  m: BigInt)->BigInt {  // 快速乘
-
-    let c_i = a.clone() * b.clone() - ( a / m.clone() * b ) * m.clone();
-    
-    if c_i < m {
-        return c_i ;
+fn quick_power(mut a: i128, mut b: i128, mod_val: i128) -> i128 {
+    let mut ans = 1;
+    a %= mod_val;
+    while b > 0 {
+        if b & 1 == 1 {
+            ans = (ans * a) % mod_val;
+        }
+        a = (a * a) % mod_val;
+        b >>= 1;
     }
-    c_i + m
+    ans
+}
 
-  }
-  
-  fn qpow( mut x: BigInt, mut p: BigInt, m: BigInt) -> BigInt {  // 快速幂
-    let mut ans: BigInt = BigInt::one();
-    while p != BigInt::zero() {
-    // while p.clone().cmp(&BigInt::one()) != Ordering::Equal {
-    // while p != 0 {
-    //   if (p.clone() & BigInt::one()).cmp(&BigInt::one()) != Ordering::Equal {
-    //     ans = bmul(ans, x.clone(), m.clone());
-    //   }
-      if p.clone() & BigInt::one() != BigInt::one(){
-        ans = bmul(ans, x.clone(), m.clone());
-      }
-
-      x = bmul(x.clone(), x, m.clone());
-      p = p >> BigInt::one();
-    }
-    return ans;
-  }
-  
-  fn Miller_Rabin(p : BigInt) -> bool {  // 判断素数
-    // if p.clone().cmp(&BigInt::from(2.to_string())) == Ordering::Less {
-    if p < BigInt::from(2.to_string()){
-    // if p <  2 {
+pub fn miller_rabin(n: i128) -> bool {
+    if n < 2 {
         return false;
     }
-    if p == BigInt::from(2.to_string()){
-    // if p.clone().cmp(&BigInt::from(2.to_string())) == Ordering::Equal  {
+    let primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+    if primes.contains(&n) {
         return true;
     }
-    if p == BigInt::from(3.to_string()){
-    // if p.clone().cmp(&BigInt::from(3.to_string())) == Ordering::Equal  {
-        return true;
+    if n % 2 == 0 {
+        return false;
     }
-    let mut d = p.clone() - BigInt::one();
-    let mut r: i128 = 0;
-    // while   (d.clone() & BigInt::one()).cmp(&BigInt::zero()) == Ordering::Equal {
-    while d.clone() & BigInt::one() == BigInt::zero() {
-        r += 1;
-        d = d >> BigInt::one(); 
-     } // 将d处理为奇数
-     let mut k: u128 = 0;
-     while k < 10{
-        k += 1;
-        let mut  rng = thread_rng();
-        let rand: i16 = rng.gen_range(0..i16::MAX);
-        let a  = (BigInt::from(rand.to_string()) ) % (p.clone() - BigInt::from(2.to_string())) + BigInt::from(2.to_string());
-        let mut x: BigInt = qpow(a , d.clone(), p.clone());
-        if x == BigInt::one()  || x == p.clone() - BigInt::one() {
+
+    let mut d = n - 1;
+    let mut s = 0;
+    while d % 2 == 0 {
+        d /= 2;
+        s += 1;
+    }
+
+    for &a in &primes {
+        if a >= n {
             continue;
         }
-        let mut i =0;
-        while i < r - 1 {
-            i += 1;
-            x = bmul(x.clone(), x, p.clone());
-            if x == p.clone() - BigInt::one() {
+        let mut x = quick_power(a, d, n);
+        if x == 1 || x == n - 1 {
+            continue;
+        }
+        let mut found = false;
+        for _ in 0..s {
+            x = quick_multiply(x, x, n);
+            if x == n - 1 {
+                found = true;
                 break;
             }
         }
-        if x != p.clone() - BigInt::one() {
+        if !found {
             return false;
         }
-     }
-     true
-  }
-  
-  fn Pollard_Rho( x: BigInt)->BigInt {
-    // let mut s: i128 = 0;
-    let mut s= BigInt::zero();
-    // let mut t: i128 = 0;
-    let mut t = BigInt::zero();
-    let mut rng = thread_rng();
-    let r: i16 = rng.gen_range(0..i16::MAX);
-    let c = BigInt::from(r.to_string() ) % (x.clone() - BigInt::one()) + BigInt::one();
-    let mut step: i32 = 1;
-    let mut goal: i32 = 1;
-    // int step = 0, goal = 1;
-    // let mut  val: i128 = 1;
-    let mut  val = BigInt::one();
-    // ll val = 1;
-    while true {
-        step = 1;
-        while step <= goal {
-            step += 1;
-            t = (bmul(t.clone() , t.clone(), x.clone()) + c.clone()) % x.clone();
-            val = bmul(val, (t.clone() - s.clone()).abs(), x.clone());
-            if (step % 127) == 0 {
-                let d = gcd(val.clone(), x.clone());
-                if d > BigInt::one() {
-                    return d;
-                }
-            }
-        }
+    }
+    true
+}
 
-        let d = gcd(val.clone(), x.clone());
-        if d > BigInt::one() {
-            return d;
-        }
 
-        goal *= 2;
-        s = t.clone();
-        val = BigInt::one();
+fn gcd(mut a: i128, mut b: i128) -> i128 {
+    while b != 0 {
+        let tmp = b;
+        b = a % b;
+        a = tmp;
     }
-    BigInt::zero()
-  }
-  
-  fn fac( number: BigInt, mut max_factor: BigInt) -> BigInt {
-    let mut x = number;
-    
-    if x <= max_factor ||  x < BigInt::from(2.to_string()) {
-        return max_factor;
+    a.abs()
+}
+
+fn pollard_rho(n: i128, c: i128) -> i128 {
+    if n % 2 == 0 {
+        return 2;
     }
-    if Miller_Rabin( BigInt::from(x.clone().to_string()) ) {              // 如果x为质数
-        if max_factor < x{
-            max_factor = x.clone();           // 更新答案
+    if n % 3 == 0 {
+        return 3;
+    }
+    if n % 5 == 0 {
+        return 5;
+    }
+
+    let mut rng = rand::thread_rng();
+    let mut x = rng.gen_range(0..n);
+    let mut y = x;
+    let mut d = 1;
+    let mut offset = c;
+
+    while d == 1 {
+        x = (quick_multiply(x, x, n) + offset) % n;
+        y = (quick_multiply(y, y, n) + offset) % n;
+        y = (quick_multiply(y, y, n) + offset) % n;
+        d = gcd((x - y).abs(), n);
+        if x == y {
+            offset += 1;
+            x = 0;
+            y = 0;
         }
-    //   max_factor = u128::max(max_factor, x) ;  // 更新答案
-      return max_factor;
     }
-    let mut p = BigInt::from(x.clone().to_string());
-    while p >= BigInt::from(x.clone().to_string()) {
-        p = Pollard_Rho( BigInt::from(x.to_string()) );  // 使用该算法
+    d
+}
+
+pub fn find_factor(n: i128, factors: &mut Vec<i128>) {
+    if miller_rabin(n) {
+        factors.push(n);
+        return;
     }
-    while (BigInt::from(x.clone().to_string()) % p.clone()) == BigInt::one(){
-        x =  BigInt::from(x.clone().to_string()) / p.clone();
-    } 
-    max_factor = fac(x, max_factor);
-    max_factor= fac(p.clone(), max_factor);  // 继续向下分解x和p
-    max_factor
-  }
-  
+    let divisor = pollard_rho(n, 1);
+    find_factor(divisor, factors);
+    find_factor(n / divisor, factors);
+}
