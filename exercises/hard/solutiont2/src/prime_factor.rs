@@ -13,14 +13,14 @@ pub fn find_max_prime_factor(number: u128) -> u128 {
     // let result =  fac(BigInt::from(number.to_string()) ,BigInt::from(max_factor.to_string()) );
     // println!("result={:?}", result);
 
-    if prime_factor::miller_rabin(number as i128) {
+    if miller_rabin(number as i128) {
         println!("isprime");
         println!("{}", number);
         max_factor = number;
     } else {
         println!("noprime");
         let mut factors = Vec::new();
-        prime_factor::find_factor(number as i128, &mut factors);
+        find_factor(number as i128, &mut factors);
         factors.sort();
         let unique_factors: Vec<_> = factors.iter().copied().collect();
         for (i, &factor) in unique_factors.iter().enumerate() {
