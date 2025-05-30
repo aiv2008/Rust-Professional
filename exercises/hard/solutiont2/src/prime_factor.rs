@@ -6,6 +6,7 @@ use std::cmp::Ordering;
 use std::ops::{Add, BitAnd, Div, Mul, Neg, Rem, Shr, Sub};
 use crate::prime_factor;
 // use fraction::Fraction;
+use std::str::FromStr;
 
 pub fn find_max_prime_factor(number: u128) -> u128 {
 
@@ -31,6 +32,7 @@ pub fn find_max_prime_factor(number: u128) -> u128 {
         }
         println!();
     }
+    println!("{number}'s max prime factor: {max_factor}");
     max_factor
     // 0
 }
@@ -450,12 +452,25 @@ fn quick_power(mut a: i128, mut b: i128, mod_val: i128) -> i128 {
     a %= mod_val;
     while b > 0 {
         if b & 1 == 1 {
-            ans = (ans * a) % mod_val;
+            if a  > (i128::MAX as f64).sqrt() as i128 || ans  > (i128::MAX as f64).sqrt() as i128  {
+                let a_bgint = BigInt::from(a.to_string());
+                let mut ans_bgint = BigInt::from(a.to_string());
+                let mod_val_bgint = BigInt::from(mod_val.to_string());
+                ans_bgint = (ans_bgint.clone() * a_bgint.clone()) % mod_val_bgint;
+                ans = i128::from_str( ans_bgint.to_string().as_str()).unwrap();
+            }else{
+                ans = (ans * a) % mod_val;
+            }
         }
-        if a  > i128::MAX {//若到达最大值，则转换成bigint方式计算
+        if a  > (i128::MAX as f64).sqrt() as i128 {//若到达最大值，则转换成bigint方式计算
+            let mut a_bgint = BigInt::from(a.to_string());
+            let mod_val_bgint = BigInt::from(mod_val.to_string());
+            a_bgint = (a_bgint.clone() * a_bgint.clone()) % mod_val_bgint;
+            a = i128::from_str( a_bgint.to_string().as_str()).unwrap();
+        }else{
+            a = (a * a) % mod_val;
+        }
 
-        }
-        a = (a * a) % mod_val;
         b >>= 1;
     }
     ans
