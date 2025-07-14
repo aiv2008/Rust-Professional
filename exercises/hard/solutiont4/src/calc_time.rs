@@ -195,7 +195,7 @@ fn gregorian_to_jd(year: i32, month: u32, day: u32) -> f64 {
 
 // 计算下一个A股交易日剩余天数
 // 计算下一个A股交易日剩余天数（不含当天）
-fn days_until_next_ashare(year: i32, month: u32, day: u32) -> u32 {
+pub fn days_until_next_ashare(year: i32, month: u32, day: u32) -> u32 {
     let mut current_year = year;
     let mut current_month = month;
     let mut current_day = day;
